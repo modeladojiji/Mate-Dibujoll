@@ -42,7 +42,7 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Botón del conejo (sin utilidad pero interactivo visualmente) */
+        /* Botón del conejo interactivo visualmente */
         .usagi-btn {
             background: none;
             border: none;
@@ -99,67 +99,29 @@
             line-height: 1.4;
         }
 
-        /* Panel de control inferior (Contiene el Mate, Botón AR y Botón Alternativo) */
+        /* Contenedor flotante inferior para alinear el mate y el botón por si acaso */
         .ar-controls-container {
             position: absolute;
-            bottom: 20px;
+            bottom: 35px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             z-index: 10;
-            width: 90%;
-            max-width: 340px;
         }
 
-        /* Imagen del mate */
+        /* Imagen del mate arriba del botón AR */
         .mate-image-overlay {
-            width: 90px;
+            width: 120px;
             height: auto;
             filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.15));
-            margin-bottom: 5px;
         }
 
-        /* Estilo base para los botones */
-        .btn-universal {
-            width: 100%;
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
-            box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
-            text-align: center;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
-
-        /* Botón AR Principal */
+        /* Ocultamos el botón original porque ahora el inicio será automático */
         #ar-button {
-            background-color: #7B2CBF;
-        }
-
-        #ar-button:active {
-            transform: scale(0.95);
-            background-color: #5A189A;
-        }
-
-        /* Botón de Emergencia si el de arriba falla */
-        .fallback-btn {
-            background-color: #9D4EDD;
-            font-size: 13px;
-            padding: 8px 16px;
-            box-shadow: 0 3px 8px rgba(157, 78, 221, 0.2);
-        }
-
-        .fallback-btn:active {
-            transform: scale(0.95);
-            background-color: #7B2CBF;
+            display: none !important;
         }
     </style>
 </head>
@@ -173,62 +135,43 @@
         </button>
     </div>
 
-    <!-- Visor 3D configurado con modos nativos ordenados -->
+    <!-- El visor ahora tiene la propiedad 'ar-placement' y 'ar' para forzar la acción -->
     <model-viewer 
-        id="viewer"
+        id="mate-viewer"
         src="mateurbano.glb" 
-        ios-src="mateurbanoaipon.usdz"
-        ar 
-        ar-modes="scene-viewer quick-look webxr" 
+        ios-src="mate_urbano aipon.usdz"
+        ar
+        ar-modes="scene-viewer quick-look webxr"
         camera-controls 
         shadow-intensity="1" 
         auto-rotate>
         
-        <!-- Texto explicativo de fondo -->
+        <!-- Texto explicativo que se ve de fondo si tarda en abrir -->
         <div slot="poster" class="loading-text-container">
             <div class="loading-text">
-                Este es mi objeto de estudio, el mate "BRAVO" visto en AR. ¡Divertite!
+                Abriendo Realidad Aumentada... ¡Preparate para ver el mate "BRAVO"! 
             </div>
         </div>
 
-        <!-- Grupo inferior de controles universales -->
+        <!-- Solo dejamos la imagen del mate flotando de forma decorativa abajo si no salta AR -->
         <div class="ar-controls-container">
-            <!-- Imagen fija del mate -->
             <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-overlay">
-            
-            <!-- Opción 1: Botón AR nativo (Intenta abrir directo) -->
-            <button slot="ar-button" id="ar-button" class="btn-universal">
-                ✨ Ver en tu espacio (AR)
-            </button>
-            
-            <!-- Opción 2: Botón de respaldo (Fuerza la apertura externa si el de arriba no responde) -->
-            <a id="android-fallback" class="btn-universal fallback-btn" href="#" target="_blank" style="display: none;">
-                ¿No abre? Forzar AR en Android 🤖
-            </a>
+            <button slot="ar-button" id="ar-button"></button>
         </div>
         
     </model-viewer>
 
     <script>
-        // Este script genera un enlace alternativo dinámico para Android.
-        // Si el botón principal falla, este enlace obliga al sistema de Google a abrir la cámara.
-        document.addEventListener("DOMContentLoaded", () => {
-            const currentURL = window.location.href;
-            // Quitamos el protocolo http/https para armar el comando intent de Android Scene Viewer
-            const cleanURL = currentURL.replace(/^https?:\/\//, "");
-            
-            const fallbackBtn = document.getElementById("android-fallback");
-            
-            // Construimos la ruta directa al archivo alojado en tu servidor web
-            const modelURL = currentURL.substring(0, currentURL.lastIndexOf('/')) + "/mateurbano.glb";
-            
-            // Comando nativo de Android intent para Scene Viewer
-            fallbackBtn.href = `intent://://google.com{encodeURIComponent(modelURL)}&mode=ar_only#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(currentURL)};end;`;
-
-            // Detectamos si el usuario está en Android para mostrar el botón de auxilio
-            if (/Android/i.test(navigator.userAgent)) {
-                fallbackBtn.style.display = "block";
-            }
+        const viewer = document.getElementById('mate-viewer');
+        
+        // Función mágica: Apenas el visor web detecte que cargó en el celular, 
+        // va a simular un clic automático oculto para saltar directo a la cámara.
+        viewer.addEventListener('load', () => {
+            setTimeout(() => {
+                if (viewer.canActivateAR) {
+                    viewer.activateAR();
+                }
+            }, 1000); // Espera 1 segundo de cortesía visual antes de saltar
         });
     </script>
 
