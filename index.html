@@ -178,31 +178,21 @@
     <!-- Imagen del mate colocada debajo del título -->
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-    <!-- Visor 3D con src y ios-src inicialmente vacíos -->
-    <model-viewer 
-        id="modelViewer"
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        camera-controls 
-        poster="cargando.png" 
-        shadow-intensity="1" 
-        auto-rotate>
-        
-        <!-- Texto explicativo de fondo -->
-        <div slot="poster" class="loading-text-container">
-            <div class="loading-text">
-                Este es mi objeto de estudio, el mate "BRAVO" visto en AR. ¡Divertite!
-            </div>
-        </div>
-
-        <!-- Botón flotante inferior de Realidad Aumentada -->
-        <div class="ar-controls-container">
-            <button slot="ar-button" id="ar-button">
-                🎇 Ver en tu espacio (AR) 🎇
-            </button>
-        </div>
-        
-    </model-viewer>
+   <model-viewer 
+    id="modelViewer"
+    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+    ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
+    ar 
+    ar-modes="webxr scene-viewer quick-look" 
+    ar-scale="auto"
+    ar-placement="floor"
+    camera-controls 
+    shadow-intensity="1">
+    
+    <button slot="ar-button" id="ar-button">
+        🎇 Ver en tu espacio (AR) 🎇
+    </button>
+</model-viewer>
 
     <script>
         // 1. Script para los brillitos alrededor del botón del conejo
