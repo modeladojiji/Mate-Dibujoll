@@ -1,5 +1,5 @@
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -34,7 +34,7 @@
             margin-top: 20px;
             padding: 0 15px;
             z-index: 10;
-            position: relative; /* Necesario para posicionar los brillitos respecto al header */
+            position: relative;
         }
 
         /* Título superior de bienvenida */
@@ -72,23 +72,23 @@
             display: block;
         }
 
-        /* Estilo para los brillitos dinámicos */
+        /* Estilo para los brillitos dinámicos alrededor */
         .sparkle {
             position: absolute;
-            font-size: 18px;
+            font-size: 16px;
             pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
+            animation: burstOut 0.8s ease-out forwards;
             z-index: 100;
         }
 
-        @keyframes floatUp {
+        @keyframes burstOut {
             0% {
                 opacity: 1;
-                transform: translate(0, 0) scale(0.5);
+                transform: translate(0, 0) scale(0.4);
             }
             100% {
                 opacity: 0;
-                transform: translate(var(--dx), var(--dy)) scale(1.4);
+                transform: translate(var(--dx), var(--dy)) scale(1.3);
             }
         }
 
@@ -206,38 +206,47 @@
         
     </model-viewer>
 
-    <!-- Script para generar los brillitos al hacer clic en el conejo -->
+    <!-- Script para generar los brillitos alrededor del botón del conejo -->
     <script>
         const usagiButton = document.getElementById('usagiButton');
 
-        usagiButton.addEventListener('click', (e) => {
+        usagiButton.addEventListener('click', () => {
             const rect = usagiButton.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
+            // Coordenadas del centro del botón en la pantalla
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
 
-            // Cantidad de brillitos a generar por cada clic
-            const numSparkles = 6;
-            const symbols = ['✨', '⭐', '💫', '💖'];
+            const numSparkles = 8; // Cantidad de destellos
+            const symbols = ['✨', '⭐', '💫', '✨'];
 
             for (let i = 0; i < numSparkles; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
                 sparkle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 
-                // Posición inicial en el centro del botón
-                sparkle.style.left = `${x - window.innerWidth / 2 + 15}px`; 
-                sparkle.style.top = `${y - 20}px`;
+                // Ángulo aleatorio alrededor de 360 grados
+                const angle = Math.random() * Math.PI * 2;
+                // Distancia inicial desde el centro (borde exacto del botón o un poquito más afuera)
+                const radius = 22 + Math.random() * 8; 
 
-                // Dirección aleatoria a la que saldrán disparados los brillos
-                const dx = (Math.random() - 0.5) * 100; // Movimiento horizontal aleatorio
-                const dy = -Math.random() * 80 - 20;     // Movimiento hacia arriba
+                // Posición inicial ya distribuida alrededor del círculo
+                const startX = centerX + Math.cos(angle) * radius;
+                const startY = centerY + Math.sin(angle) * radius;
+
+                sparkle.style.left = `${startX}px`;
+                sparkle.style.top = `${startY}px`;
+
+                // Desplazamiento final: se alejan aún más desde su punto de origen
+                const distanceOut = 30 + Math.random() * 25;
+                const dx = Math.cos(angle) * distanceOut;
+                const dy = Math.sin(angle) * distanceOut;
                 
                 sparkle.style.setProperty('--dx', `${dx}px`);
                 sparkle.style.setProperty('--dy', `${dy}px`);
 
                 document.body.appendChild(sparkle);
 
-                // Eliminar el elemento del DOM una vez termine la animación
+                // Limpiar del DOM al finalizar la animación
                 setTimeout(() => {
                     sparkle.remove();
                 }, 800);
