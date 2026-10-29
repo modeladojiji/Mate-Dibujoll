@@ -117,7 +117,7 @@
             line-height: 1.4;
         }
 
-        /* Estilo para el botón AR nativo de model-viewer */
+        /* Estilo idéntico para el botón AR */
         #ar-button {
             position: absolute;
             bottom: 30px;
@@ -153,7 +153,7 @@
 
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-    <!-- model-viewer base con el código de iOS intacto -->
+    <!-- model-viewer con el código de iOS COMPLETAMENTE INTACTO -->
     <model-viewer 
         id="modelViewer"
         src="mateurbano.glb" 
@@ -220,16 +220,30 @@
             }
         });
 
-        // 2. Adaptación dinámica independiente para Android (Samsung, etc.) sin alterar iOS
-        window.addEventListener('DOMContentLoaded', () => {
+        // 2. Redirección independiente y robusta para la cámara en Android
+        const arButton = document.getElementById('ar-button');
+
+        arButton.addEventListener('click', (e) => {
             const ua = navigator.userAgent;
             const isAndroid = /android/i.test(ua);
-            const mv = document.getElementById('modelViewer');
 
-            if (isAndroid && mv) {
-                // Forzamos de forma nativa los modos compatibles ideales para Android evitando la pantalla negra
-                mv.setAttribute('ar-modes', 'scene-viewer webxr');
+            if (isAndroid) {
+                // Evitamos que model-viewer intente manejar el evento por defecto (lo que causaba la pantalla negra)
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Obtenemos la ruta absoluta correcta de tu archivo GLB actual
+                const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+                const glbAbsoluteUrl = baseUrl + 'mateurbano.glb';
+
+                // Intent oficial de Google Scene Viewer optimizado para abrir la cámara nativa en Android
+                const sceneViewerUrl = `https://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_only&title=Mate+Urbano+Bravo`;
+                const androidIntent = `intent://${sceneViewerUrl.replace(/^https:\/\//, '')}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(window.location.href)};end;`;
+
+                // Forzamos la apertura directa del intent nativo en el dispositivo
+                window.location.href = androidIntent;
             }
+            // Si es iOS, el script se detiene aquí y permite que el atributo nativo "quick-look" y tu archivo .usdz funcionen exactamente igual que siempre.
         });
     </script>
 
