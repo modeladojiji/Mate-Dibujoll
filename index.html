@@ -117,7 +117,7 @@
             line-height: 1.4;
         }
 
-        /* Botón AR estilizado */
+        /* Estilo para el botón AR nativo de model-viewer */
         #ar-button {
             position: absolute;
             bottom: 30px;
@@ -153,7 +153,7 @@
 
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-    <!-- model-viewer con el código de iOS COMPLETAMENTE INTACTO -->
+    <!-- model-viewer base con el código de iOS intacto -->
     <model-viewer 
         id="modelViewer"
         src="mateurbano.glb" 
@@ -220,30 +220,16 @@
             }
         });
 
-        // 2. Controlador de redirección independiente para Android (Soluciona el problema de Samsung/Android sin tocar iOS)
-        const modelViewer = document.getElementById('modelViewer');
-        const arButton = document.getElementById('ar-button');
-
-        arButton.addEventListener('click', (event) => {
+        // 2. Adaptación dinámica independiente para Android (Samsung, etc.) sin alterar iOS
+        window.addEventListener('DOMContentLoaded', () => {
             const ua = navigator.userAgent;
             const isAndroid = /android/i.test(ua);
+            const mv = document.getElementById('modelViewer');
 
-            if (isAndroid) {
-                // Previene el comportamiento por defecto de model-viewer para evitar la pantalla en negro
-                event.preventDefault();
-                event.stopPropagation();
-
-                // Construye la URL absoluta del archivo GLB (necesaria para el Intent de Android)
-                const currentURL = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
-                const glbAbsoluteUrl = currentURL + 'mateurbano.glb';
-
-                // Intent nativo directo a Google Scene Viewer para abrir la cámara en Android
-                const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbAbsoluteUrl)}&mode=ar_only&title=Mate+Urbano+Bravo#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;end;`;
-                
-                // Ejecuta la redirección directa a la cámara de Android
-                window.location.href = intentUrl;
+            if (isAndroid && mv) {
+                // Forzamos de forma nativa los modos compatibles ideales para Android evitando la pantalla negra
+                mv.setAttribute('ar-modes', 'scene-viewer webxr');
             }
-            // Si es iOS o PC, el script no hace nada y deja actuar libremente al atributo "quick-look" y código original de Apple.
         });
     </script>
 
