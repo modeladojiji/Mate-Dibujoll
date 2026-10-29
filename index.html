@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a mi página</title>
+    <title>Mate Urbano - Realidad Aumentada</title>
     
     <!-- Importación oficial de model-viewer -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
     <style>
-        /* Fondo general con el tono lila pastel */
         body {
             margin: 0;
             padding: 0;
@@ -24,7 +23,6 @@
             box-sizing: border-box;
         }
 
-        /* Contenedor del encabezado (Título + Botón del conejo) */
         .header-container {
             display: flex;
             align-items: center;
@@ -36,7 +34,6 @@
             position: relative;
         }
 
-        /* Título superior de bienvenida */
         .header-title {
             font-size: 22px;
             font-weight: bold;
@@ -45,7 +42,6 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Botón del conejo */
         .usagi-btn {
             background: none;
             border: none;
@@ -60,7 +56,6 @@
             transform: scale(0.9);
         }
 
-        /* Miniatura circular del conejo */
         .usagi-thumb {
             width: 40px;
             height: 40px;
@@ -71,7 +66,6 @@
             display: block;
         }
 
-        /* Estilo para los brillitos dinámicos alrededor */
         .sparkle {
             position: absolute;
             font-size: 16px;
@@ -81,17 +75,10 @@
         }
 
         @keyframes burstOut {
-            0% {
-                opacity: 1;
-                transform: translate(0, 0) scale(0.4);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--dx), var(--dy)) scale(1.3);
-            }
+            0% { opacity: 1; transform: translate(0, 0) scale(0.4); }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.3); }
         }
 
-        /* Imagen del mate ubicada justo debajo del título */
         .mate-image-header {
             width: 90px;
             height: auto;
@@ -100,15 +87,13 @@
             z-index: 10;
         }
 
-        /* Contenedor del visor 3D en lila claro */
         model-viewer {
             width: 100%;
-            flex: 1; /* Ocupa el espacio central restante */
+            flex: 1;
             background-color: #F3EAFE;
             --poster-color: transparent; 
         }
 
-        /* Texto descriptivo de fondo que aparece al cargar */
         .loading-text-container {
             display: flex;
             justify-content: center;
@@ -132,20 +117,12 @@
             line-height: 1.4;
         }
 
-        /* Contenedor flotante inferior para el botón AR */
-        .ar-controls-container {
+        /* Estilo para el botón AR nativo */
+        #ar-button {
             position: absolute;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10;
-        }
-
-        /* Botón inferior para activar la Realidad Aumentada */
-        #ar-button {
             background-color: #7B2CBF;
             border-radius: 30px;
             border: none;
@@ -155,47 +132,54 @@
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
+            z-index: 10;
             white-space: nowrap;
         }
 
         #ar-button:active {
             background-color: #5A189A;
-            transform: scale(0.95);
+            transform: translateX(-50%) scale(0.95);
         }
     </style>
 </head>
 <body>
 
-    <!-- Encabezado con título y botón del conejo -->
     <div class="header-container">
-        <div class="header-title">Bienvenido a mi página. ٩(ˊᗜˋ )u </div>
+        <div class="header-title">Bienvenido a mi página. ٩(ˊᗜˋ )و </div>
         <button class="usagi-btn" id="usagiButton" type="button" aria-label="Conejo interactivo">
             <img src="chiikawa-usagi.jfif" alt="Conejo" class="usagi-thumb">
         </button>
     </div>
 
-    <!-- Imagen del mate colocada debajo del título -->
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-   <model-viewer 
-    id="modelViewer"
-    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
-    ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz"
-    ar 
-    ar-modes="webxr scene-viewer quick-look" 
-    ar-scale="auto"
-    ar-placement="floor"
-    camera-controls 
-    shadow-intensity="1">
-    
-    <button slot="ar-button" id="ar-button">
-        🎇 Ver en tu espacio (AR) 🎇
-    </button>
-</model-viewer>
+    <!-- model-viewer configurado para Android (GLB + WebXR) y iOS (USDZ + Quick Look) -->
+    <model-viewer 
+        id="modelViewer"
+        src="mateurbano.glb" 
+        ios-src="mate_urbanoaipon.usdz"
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        ar-scale="auto"
+        ar-placement="floor"
+        camera-controls 
+        poster="cargando.png" 
+        shadow-intensity="1" 
+        auto-rotate>
+        
+        <div slot="poster" class="loading-text-container">
+            <div class="loading-text">
+                Este es mi objeto de estudio, el mate "BRAVO" visto en AR. ¡Divertite!
+            </div>
+        </div>
+
+        <button slot="ar-button" id="ar-button">
+            🎇 Ver en tu espacio (AR) 🎇
+        </button>
+        
+    </model-viewer>
 
     <script>
-        // 1. Script para los brillitos alrededor del botón del conejo
         const usagiButton = document.getElementById('usagiButton');
 
         usagiButton.addEventListener('click', () => {
@@ -232,18 +216,6 @@
                 setTimeout(() => {
                     sparkle.remove();
                 }, 800);
-            }
-        });
-
-        // 2. Script para que el modelo 3D CARGUE SOLAMENTE al tocar el botón de AR
-        const arButton = document.getElementById('ar-button');
-        const modelViewer = document.getElementById('modelViewer');
-
-        arButton.addEventListener('click', () => {
-            // Si el modelo aún no tiene asignada la ruta, se la cargamos en este momento
-            if (!modelViewer.hasAttribute('src')) {
-                modelViewer.setAttribute('src', 'mateurbano.glb');
-                modelViewer.setAttribute('ios-src', 'mate_urbanoaipon.usdz');
             }
         });
     </script>
