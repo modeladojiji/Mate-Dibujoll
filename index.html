@@ -171,31 +171,22 @@
 
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-    <!-- model-viewer con separación de modelo web vs modelo de RA -->
+     <!-- Visor 3D configurado con los modelos y la ranura para el texto de carga -->
     <model-viewer 
-        id="modelViewer"
-        src="otromodelo.glb" 
-        scale="1.2 1.2 1.2"
+        src="mateurbano.glb" 
+        ios-src="mate_urbanoaipon.usdz"
         ar 
         ar-modes="webxr scene-viewer quick-look" 
-        ar-scale="auto"
-        ar-placement="floor"
         camera-controls 
         poster="cargando.png" 
         shadow-intensity="1" 
         auto-rotate>
         
-        <!-- Atributos específicos para forzar los archivos originales solo al abrirse en RA -->
-        <script>
-            // Vinculamos de manera dinámica o directa los archivos originales para el entorno AR de los visores nativos
-            const mv = document.getElementById('modelViewer');
-            mv.setAttribute('ar-src', 'mateurbano.glb');
-            mv.setAttribute('ios-src', 'mate_urbanoaipon.usdz');
-        </script>
-
+        <!-- Texto explicativo que se ve de fondo en lugar de la imagen del mate -->
         <div slot="poster" class="loading-text-container">
             <div class="loading-text">
-                Cargando el modelo interactivo de la página... ¡Divertite!
+                Este es mi objeto de estudio, el mate "BRAVO" visto en AR. ¡Divertite!
+            </div>
             </div>
         </div>
 
