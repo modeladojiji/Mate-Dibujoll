@@ -171,29 +171,28 @@
 
     <img src="BRAVO-4001B-VIOLETA-1.jpg" alt="Mate Urbano" class="mate-image-header">
 
-    <!-- model-viewer configurado con modelo web propio y los archivos de RA originales estáticos -->
-    <model-viewer 
-        id="modelViewer"
-        src="otromodelo.glb" 
-        ios-src="mate_urbanoaipon.usdz"
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        ar-scale="auto"
-        ar-placement="floor"
-        camera-controls 
-        poster="cargando.png" 
-        shadow-intensity="1" 
-        auto-rotate>
-        
-        <div slot="poster" class="loading-text-container">
-            <div class="loading-text">
-                Cargando el modelo de la página... ¡Divertite!
-            </div>
+    <!<model-viewer 
+    id="modelViewer"
+    src="otromodelo.glb" 
+    ios-src="mate_urbanoaipon.usdz"
+    ar 
+    ar-modes="webxr scene-viewer quick-look" 
+    ar-scale="auto"
+    ar-placement="floor"
+    camera-controls 
+    poster="cargando.png" 
+    shadow-intensity="1" 
+    auto-rotate>
+    
+    <div slot="poster" class="loading-text-container">
+        <div class="loading-text">
+            Cargando el modelo de la página... ¡Divertite!
         </div>
+    </div>
 
-        <button slot="ar-button" id="ar-button">
-            🎇 Ver en tu espacio (AR) 🎇
-        </button>
+    <button slot="ar-button" id="ar-button">
+        🎇 Ver en tu espacio (AR) 🎇
+    </button>
         
     </model-viewer>
 
