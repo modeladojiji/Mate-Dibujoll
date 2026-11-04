@@ -67,6 +67,17 @@
         touch-action="pan-y"
         shadow-intensity="1" 
         auto-rotate>
+     <const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent
+                if (isIOS) {
+
+            console.log("Dispositivo Apple detectado.");
+
+            console.log("Modo AR: Quick Look.");
+
+        }
+
+    </script>
+
         
         <!-- Botón que solo aparecerá en celulares compatibles con RA -->
         <button slot="ar-button" id="ar-button">
